@@ -15,7 +15,7 @@ $(function() {
   var transport = 'websocket';
 
   var request = {
-    url: "/atmosphere/the-chat",
+    url: "/the-chat",
     contentType: "application/json",
     logLevel: 'debug',
     transport: transport,
