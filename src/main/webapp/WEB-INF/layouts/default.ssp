@@ -30,7 +30,7 @@
       <%= unescape(body) %>
 
     </div> <!-- /container -->
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/jquery-1.7.2.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery-atmosphere.js"></script>
     <script src="js/application.js"></script>
