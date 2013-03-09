@@ -1,54 +1,48 @@
 import sbt._
 import Keys._
+import org.scalatra.sbt._
+import org.scalatra.sbt.PluginKeys._
+import com.mojolly.scalate.ScalatePlugin._
+import ScalateKeys._
 
-object ScalatraAtmosphereExampleBuild extends Build {
+object AtmosphereBuild extends Build {
   val Organization = "com.example"
   val Name = "Scalatra Atmosphere Example"
   val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.9.2"
-  val ScalatraVersion = "2.2.0-SNAPSHOT"
-
-  import java.net.URL
-  import com.github.siasia.PluginKeys.port
-  import com.github.siasia.WebPlugin.{container, webSettings}
+  val ScalatraVersion = "2.2.0"
 
   lazy val project = Project (
-    "my-scalatra-web-app",
+    "atmosphere-example",
     file("."),
-    settings = Defaults.defaultSettings ++ webSettings ++ Seq(
+    settings = ScalatraPlugin.scalatraWithWarOverlays ++ Defaults.defaultSettings ++ ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
       organization := Organization,
       name := Name,
       version := Version,
       scalaVersion := ScalaVersion,
       resolvers += "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
+      resolvers += "Akka Repo" at "http://repo.akka.io/repository",
       libraryDependencies ++= Seq(
-        "org.json4s"   %% "json4s-jackson" % "3.0.0",
+        "org.json4s"   %% "json4s-jackson" % "3.1.0",
         "org.scalatra" %% "scalatra" % ScalatraVersion,
-        "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion,
         "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
+        "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion,
         "ch.qos.logback" % "logback-classic" % "1.0.6" % "runtime",
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "container",
         "org.eclipse.jetty" % "jetty-websocket" % "8.1.8.v20121106" % "container;provided",
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
       ),
-      browseTask
+      scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
+        Seq(
+          TemplateConfig(
+            base / "webapp" / "WEB-INF" / "templates",
+            Seq.empty,  /* default imports should be added here */
+            Seq.empty,  /* add extra bindings here */
+            Some("templates")
+          )
+        )
+      }
     )
   )
-
-
-  val browse = TaskKey[Unit]("browse", "open web browser to localhost on container:port")
-  val browseTask = browse <<= (streams, port in container.Configuration) map { (streams, port) =>
-    import streams.log
-    val url = new URL("http://localhost:%s" format port)
-    try {
-      log info "Launching browser."
-      java.awt.Desktop.getDesktop.browse(url.toURI)
-    }
-    catch {
-      case _ => {
-        log info { "Could not open browser, sorry. Open manually to %s." format url.toExternalForm }
-      }
-    }
-  }
 }
