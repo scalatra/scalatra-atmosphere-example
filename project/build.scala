@@ -15,7 +15,7 @@ object AtmosphereBuild extends Build {
   lazy val project = Project (
     "atmosphere-example",
     file("."),
-    settings = ScalatraPlugin.scalatraWithWarOverlays ++ Defaults.defaultSettings ++ ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
+    settings =  Defaults.defaultSettings ++ ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
       organization := Organization,
       name := Name,
       version := Version,
