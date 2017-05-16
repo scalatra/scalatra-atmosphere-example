@@ -10,6 +10,7 @@ import JsonDSL._
 import java.util.Date
 import java.text.SimpleDateFormat
 import org.fusesource.scalate.Template
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ChatController extends ScalatraServlet 
   with ScalateSupport with JValueResult 
